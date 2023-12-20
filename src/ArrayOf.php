@@ -24,7 +24,7 @@ class ArrayOf implements PostAssert
         foreach ($input as $index => $inputItem) {
             $object = Typed::typed($this->type, $inputItem);
             if ($object instanceof ErrorCollection) {
-                $errors = $errors->merge($object->withPrefix("$index."));
+                $errors = $errors->merge($object->withPrefix($index, '.'));
             }
             elseif ($errors->none()) {
                 $typed[$index] = $object;

@@ -184,7 +184,7 @@ final class Typed
                 value: $input[$parameter->name] ?? ($parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null),
             );
             if ($value instanceof ErrorCollection) {
-                $errors = $errors->merge($value->withPrefix($parameter->name . '.'));
+                $errors = $errors->merge($value->withPrefix($parameter->name, '.'));
             }
             if ($errors->none()) {
                 $args[$parameter->name] = $value;
