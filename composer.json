@@ -11,6 +11,7 @@
             "email": "tomasz.pielczyk@gmail.com"
         }
     ],
+    "license": "MIT",
     "require": {
         "xtompie/result": "^1.5"
     }
