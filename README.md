@@ -85,6 +85,6 @@ Maping is done throught class constructor.
 
 Asserts:
 
-`Only` - Primitive data cant have more fields then class.
-`Compose` - Run additional `callback(): static|ErrorCollection`
-`ArrayOf` - Maps each element of array into typed object.
+- `Only` - Primitive data cant have more fields then class.
+- `Compose` - Run additional `callback(): static|ErrorCollection`
+- `ArrayOf` - Maps each element of array into typed object.
