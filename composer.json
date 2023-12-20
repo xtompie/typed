@@ -1,0 +1,17 @@
+{
+    "name": "xtompie/typed",
+    "autoload": {
+        "psr-4": {
+            "Xtompie\\Typed\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Tomasz Pielczyk",
+            "email": "tomasz.pielczyk@gmail.com"
+        }
+    ],
+    "require": {
+        "xtompie/result": "^1.5"
+    }
+}
