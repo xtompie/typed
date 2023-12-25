@@ -139,7 +139,7 @@ class Article
 
 $article = Typed::typed(Article::class, ['author' => ['name' => 'John']]);
 var_dump($article);
-/*
+/* Output:
 object(Article)#4 (1) {
     ["author":protected] => object(Author)#9 (1) {
          ["name":protected] => string(4) "John"
@@ -177,7 +177,7 @@ class Article
 
 $article = Typed::typed(Article::class, ['comments' => [['text' => 'A'], ['text' => 'B']]]);
 var_dump($article);
-/*
+/* Output:
 object(Article)#6 (1) {
     ["comments":protected] => array(2) {
         [0] => object(Comment)#12 (1) {
@@ -213,7 +213,7 @@ class ArticleQuery
 
 $query = Typed::typed(ArticleQuery::class, ['id:qt' => 1234]);
 var_dump($query);
-/*
+/* Output:
 object(ArticleQuery)#4 (1) {
     ["idGt":protected] => int(1234)
 }
@@ -242,7 +242,7 @@ class Article
 
 $article = Typed::typed(Article::class, ['title' => 'T', 'body' => 'B', 'desc' => 'D']);
 var_dump($article);
-/*
+/* Output:
 object(Xtompie\Result\ErrorCollection)#9 (1) {
     ["collection":protected] => array(1) {
         [0]=>object(Xtompie\Result\Error)#8 (3) {
@@ -291,7 +291,7 @@ class Password
 
 $password = Typed::typed(Password::class, ['new_password' => '1234', 'new_password_confirm' => '123']);
 var_dump($password);
-/*
+/* Output:
 object(Xtompie\Result\ErrorCollection)#7 (1) {
     ["collection":protected] => array(1) {
         [0] => object(Xtompie\Result\Error)#4 (3) {

@@ -10,53 +10,53 @@ class NotBlankTest extends TestCase
 {
     public function testValidNotBlank(): void
     {
-        // Given
+        // given
         $assert = new NotBlank();
 
-        // When
+        // when
         $input = 'non-empty-value';
         $result = $assert->assert($input, 'string');
 
-        // Then
+        // then
         $this->assertEquals($input, $result);
     }
 
     public function testInvalidNotBlank(): void
     {
-        // Given
+        // given
         $assert = new NotBlank();
 
-        // When
+        // when
         $input = '';
         $result = $assert->assert($input, 'string');
 
-        // Then
+        // then
         $this->assertInstanceOf(ErrorCollection::class, $result);
     }
 
     public function testCustomErrorMessage(): void
     {
-        // Given
+        // given
         $assert = new NotBlank(msg: 'Custom error message');
 
-        // When
+        // when
         $input = '';
         $result = $assert->assert($input, 'string');
 
-        // Then
+        // then
         $this->assertEquals('Custom error message', $result->first()->message());
     }
 
     public function testCustomKey(): void
     {
-        // Given
+        // given
         $assert = new NotBlank(key: 'custom_key');
 
-        // When
+        // when
         $input = '';
         $result = $assert->assert($input, 'string');
 
-        // Then
+        // then
         $this->assertEquals('custom_key', $result->first()->key());
     }
 }

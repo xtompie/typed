@@ -8,53 +8,53 @@ class ArrayKeyStringTest extends TestCase
 {
     public function testValidArrayKeys(): void
     {
-        // Given
+        // given
         $assert = new ArrayKeyString();
 
-        // When
+        // when
         $input = ['key1' => 'value1', 'key2' => 'value2'];
         $result = $assert->assert($input, 'array');
 
-        // Then
+        // then
         $this->assertEquals($input, $result);
     }
 
     public function testInvalidArrayKeys(): void
     {
-        // Given
+        // given
         $assert = new ArrayKeyString();
 
-        // When
+        // when
         $input = ['key1' => 'value1', 123 => 'value2'];
         $result = $assert->assert($input, 'array');
 
-        // Then
+        // then
         $this->assertInstanceOf(ErrorCollection::class, $result);
     }
 
     public function testCustomErrorMessage(): void
     {
-        // Given
+        // given
         $assert = new ArrayKeyString(msg: 'Custom error message');
 
-        // When
+        // when
         $input = ['key1' => 'value1', 123 => 'value2'];
         $result = $assert->assert($input, 'array');
 
-        // Then
+        // then
         $this->assertEquals('Custom error message', $result->first()->message());
     }
 
     public function testCustomKey(): void
     {
-        // Given
+        // given
         $assert = new ArrayKeyString(key: 'custom_key');
 
-        // When
+        // when
         $input = ['key1' => 'value1', 123 => 'value2'];
         $result = $assert->assert($input, 'array');
 
-        // Then
+        // then
         $this->assertEquals('custom_key', $result->first()->key());
     }
 }

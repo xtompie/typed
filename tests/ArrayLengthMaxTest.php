@@ -8,53 +8,53 @@ class ArrayLengthMaxTest extends TestCase
 {
     public function testValidArrayLength(): void
     {
-        // Given
+        // given
         $arrayLengthMaxValidator = new ArrayLengthMax(3);
 
-        // When
+        // when
         $input = [1, 2, 3];
         $result = $arrayLengthMaxValidator->assert($input, 'array');
 
-        // Then
+        // then
         $this->assertEquals($input, $result);
     }
 
     public function testInvalidArrayLength(): void
     {
-        // Given
+        // given
         $arrayLengthMaxValidator = new ArrayLengthMax(2);
 
-        // When
+        // when
         $input = [1, 2, 3];
         $result = $arrayLengthMaxValidator->assert($input, 'array');
 
-        // Then
+        // then
         $this->assertInstanceOf(ErrorCollection::class, $result);
     }
 
     public function testCustomErrorMessage(): void
     {
-        // Given
+        // given
         $arrayLengthMaxValidator = new ArrayLengthMax(max: 2, msg: 'Custom error message');
 
-        // When
+        // when
         $input = [1, 2, 3];
         $result = $arrayLengthMaxValidator->assert($input, 'array');
 
-        // Then
+        // then
         $this->assertEquals('Custom error message', $result->first()->message());
     }
 
     public function testCustomKey(): void
     {
-        // Given
+        // given
         $arrayLengthMaxValidator = new ArrayLengthMax(max: 2, key: 'custom_key');
 
-        // When
+        // when
         $input = [1, 2, 3];
         $result = $arrayLengthMaxValidator->assert($input, 'array');
 
-        // Then
+        // then
         $this->assertEquals('custom_key', $result->first()->key());
     }
 }
