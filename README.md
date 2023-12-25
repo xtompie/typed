@@ -89,7 +89,7 @@ Advantages of use typed objects:
 - Better static code analysis e.g. phpstan.
 - Request payload in one place.
 
-For maping objects `Typed::object` have more precise type definition:
+For maping objects `Typed::object()` have more precise type definition:
 
 ```php
 <?php
@@ -173,21 +173,16 @@ class Article
 {
     public function __construct(
         #[ArrayOf(Comment::class)]
-        protected array $coments,
+        protected array $comments,
     ) {
     }
 }
 
-$article = Typed::typed(Article::class, ['coments' => [['text' => 'A'], ['text' => 'B']]]);
+$article = Typed::typed(Article::class, ['comments' => [['text' => 'A'], ['text' => 'B']]]);
 var_dump($article);
-
-```
-
-Output
-
-```plain
+/*
 object(Article)#6 (1) {
-    ["coments":protected] => array(2) {
+    ["comments":protected] => array(2) {
         [0] => object(Comment)#12 (1) {
             ["text":protected] => string(1) "A"
         }
@@ -200,7 +195,7 @@ object(Article)#6 (1) {
 
 ### Source
 
-Primitve field name can have character that can't be used in method property name.
+Primitve field name can have characters that can't be used in method property name.
 To solve this `Source` can be used.
 
 ```php
@@ -220,14 +215,11 @@ class ArticleQuery
 
 $query = Typed::typed(ArticleQuery::class, ['id:qt' => 1234]);
 var_dump($query);
-```
-
-Output
-
-```plain
+/*
 object(ArticleQuery)#4 (1) {
     ["idGt":protected] => int(1234)
 }
+
 ```
 
 ### Only
@@ -304,11 +296,7 @@ class Password
 
 $password = Typed::typed(Password::class, ['new_password' => '1234', 'new_password_confirm' => '123']);
 var_dump($password);
-```
-
-Output
-
-```plain
+/*
 object(Xtompie\Result\ErrorCollection)#7 (1) {
     ["collection":protected] => array(1) {
         [0] => object(Xtompie\Result\Error)#4 (3) {
