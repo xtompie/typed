@@ -2,7 +2,7 @@
 
 Library that maps pritmitve types into typed objects.
 Can be used to maps request/input into objects of defined classes.
-Gives `\Xtompie\Result\ErrorColleciton` on fail.
+Gives [ErrorCollection](https://github.com/xtompie/result/blob/master/src/ErrorCollection.php) on fail.
 
 ## Requiments
 
