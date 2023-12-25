@@ -58,7 +58,7 @@ Maping is done throught class constructor.
 
 When the conditions are met then `$pet` will be an instance of `PetPayload` e.g.
 
-```plain
+```comment
 object(PetPayload)#5 (2) {
   ["name":protected] => string(5) "Cicik"
   ["age":protected] => int(3)
@@ -139,16 +139,13 @@ class Article
 
 $article = Typed::typed(Article::class, ['author' => ['name' => 'John']]);
 var_dump($article);
-```
-
-Output
-
-```plain
+/*
 object(Article)#4 (1) {
     ["author":protected] => object(Author)#9 (1) {
          ["name":protected] => string(4) "John"
     }
 }
+*/
 ```
 
 ### ArrayOf
@@ -220,7 +217,7 @@ var_dump($query);
 object(ArticleQuery)#4 (1) {
     ["idGt":protected] => int(1234)
 }
-
+*/
 ```
 
 ### Only
@@ -245,11 +242,7 @@ class Article
 
 $article = Typed::typed(Article::class, ['title' => 'T', 'body' => 'B', 'desc' => 'D']);
 var_dump($article);
-```
-
-Output
-
-```plain
+/*
 object(Xtompie\Result\ErrorCollection)#9 (1) {
     ["collection":protected] => array(1) {
         [0]=>object(Xtompie\Result\Error)#8 (3) {
@@ -259,6 +252,7 @@ object(Xtompie\Result\ErrorCollection)#9 (1) {
         }
     }
 }
+*/
 ```
 
 ### Callback
@@ -307,6 +301,7 @@ object(Xtompie\Result\ErrorCollection)#7 (1) {
         }
     }
 }
+*/
 ```
 
 ### Others
