@@ -335,7 +335,7 @@ object(Xtompie\Result\ErrorCollection)#7 (1) {
 
 ### Limitations
 
-Object property must have type.
-Type can't be and union or intersection.
-If in primitive incoming data can have many types then use mixed property.
-Then some kind of `To*` assert can be used or Callback.
+Object properties must have a specified type.
+The type cannot be a union or intersection.
+If incoming primitive data can have multiple types, use a mixed property.
+In such cases, you can us a `To*` assert or a `Callback`.
