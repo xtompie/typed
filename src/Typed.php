@@ -34,7 +34,7 @@ final class Typed
 
     /**
      * @template T of object
-     * @param class-string $type
+     * @param class-string<T> $type
      * @param mixed $input
      * @return T|ErrorCollection
      */
@@ -47,7 +47,7 @@ final class Typed
             return $input;
         }
 
-        $input = static::objectPreAssert($type, $input, $class);
+        $input = static::objectAssert($type, $input, $class);
         if ($input instanceof ErrorCollection) {
             return $input;
         }
@@ -57,7 +57,7 @@ final class Typed
             return $object;
         }
 
-        $object = static::objectPostAssert(object: $object, class: $class);
+        $object = static::objectClosure(object: $object, class: $class);
         if ($object instanceof ErrorCollection) {
             return $object;
         }
@@ -74,11 +74,11 @@ final class Typed
         return is_object($input) ? (array)$input : $input;
     }
 
-    protected static function objectPreAssert(string $type, array $input, ReflectionClass $class): array|ErrorCollection
+    protected static function objectAssert(string $type, array $input, ReflectionClass $class): array|ErrorCollection
     {
-        foreach ($class->getAttributes(PreAssert::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+        foreach ($class->getAttributes(Assert::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
             $assert = $attribute->newInstance();
-            if (!$assert instanceof PreAssert) {
+            if (!$assert instanceof Assert) {
                 continue;
             }
             $input = $assert->assert($input, $type);
@@ -89,11 +89,11 @@ final class Typed
         return $input;
     }
 
-    protected static function objectPostAssert(object $object, ReflectionClass $class): mixed
+    protected static function objectClosure(object $object, ReflectionClass $class): mixed
     {
-        foreach ($class->getAttributes(PostAssert::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+        foreach ($class->getAttributes(Closure::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
             $assert = $attribute->newInstance();
-            if (!$assert instanceof PostAssert) {
+            if (!$assert instanceof Closure) {
                 continue;
             }
             $object = $assert->assert($object);
@@ -104,11 +104,11 @@ final class Typed
         return $object;
     }
 
-    protected static function objectParamterPreAssert(string $type, mixed $input, ReflectionParameter $parameter): mixed
+    protected static function objectParamterAssert(string $type, mixed $input, ReflectionParameter $parameter): mixed
     {
-        foreach ($parameter->getAttributes(PreAssert::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+        foreach ($parameter->getAttributes(Assert::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
             $assert = $attribute->newInstance();
-            if (!$assert instanceof PreAssert) {
+            if (!$assert instanceof Assert) {
                 continue;
             }
             $input = $assert->assert($input, $type);
@@ -119,11 +119,11 @@ final class Typed
         return $input;
     }
 
-    protected static function objectParamterPostAssert(mixed $input, ReflectionParameter $parameter): mixed
+    protected static function objectParamterClosure(mixed $input, ReflectionParameter $parameter): mixed
     {
-        foreach ($parameter->getAttributes(PostAssert::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+        foreach ($parameter->getAttributes(Closure::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
             $assert = $attribute->newInstance();
-            if (!$assert instanceof PostAssert) {
+            if (!$assert instanceof Closure) {
                 continue;
             }
             $input = $assert->assert($input);
@@ -151,12 +151,17 @@ final class Typed
         ];
     }
 
-    protected static function objectParameter(ReflectionClass $class, ReflectionParameter $parameter, mixed $value): mixed
+    protected static function objectParameterValue(ReflectionClass $class, ReflectionParameter $parameter, mixed $value): mixed
     {
         [$optional, $type] = static::objectParamterType(class: $class, parameter: $parameter);
 
-        if ($value === null && $optional) {
-            return $value;
+        if ($value === null) {
+            if ($optional) {
+                return $value;
+            }
+            else {
+                return ErrorCollection::ofErrorMsg('Value is required', 'required');
+            }
         }
 
         $value = static::typed($type, $value);
@@ -164,12 +169,21 @@ final class Typed
             return $value;
         }
 
-        $value = static::objectParamterPreAssert(type: $type, input: $value, parameter: $parameter);
+        $value = static::objectParamterAssert(type: $type, input: $value, parameter: $parameter);
         if ($value instanceof ErrorCollection) {
             return $value;
         }
 
-        return static::objectParamterPostAssert(input: $value, parameter: $parameter);
+        return static::objectParamterClosure(input: $value, parameter: $parameter);
+    }
+
+    public static function objectParameterSource(ReflectionParameter $parameter): string
+    {
+        foreach ($parameter->getAttributes(Source::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+            return $attribute->newInstance()->source();
+        }
+
+        return $parameter->name;
     }
 
     protected static function objectParameters(ReflectionClass $class, array $input): object
@@ -178,13 +192,14 @@ final class Typed
         $errors = ErrorCollection::ofEmpty();
 
         foreach ($class->getConstructor()->getParameters() as $parameter) {
-            $value = static::objectParameter(
+            $source = static::objectParameterSource($parameter);
+            $value = static::objectParameterValue(
                 class: $class,
                 parameter: $parameter,
-                value: $input[$parameter->name] ?? ($parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null),
+                value: $input[$source] ?? ($parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null),
             );
             if ($value instanceof ErrorCollection) {
-                $errors = $errors->merge($value->withPrefix($parameter->name, '.'));
+                $errors = $errors->merge($value->withPrefix($source, '.'));
             }
             if ($errors->none()) {
                 $args[$parameter->name] = $value;
@@ -197,4 +212,5 @@ final class Typed
 
         return $class->newInstanceArgs($args);
     }
+
 }

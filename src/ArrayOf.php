@@ -6,7 +6,7 @@ use Attribute;
 use Xtompie\Result\ErrorCollection;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
-class ArrayOf implements PostAssert
+class ArrayOf implements Closure
 {
     public function __construct(
         protected string $type,
@@ -31,10 +31,6 @@ class ArrayOf implements PostAssert
             }
         }
 
-        if ($errors->any()) {
-            return $errors;
-        }
-
-        return $typed;
+        return $errors->any() ? $errors : $typed;
     }
 }

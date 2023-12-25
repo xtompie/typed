@@ -5,10 +5,10 @@ namespace Xtompie\Typed;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class Compose implements PostAssert
+class Callback implements Closure
 {
     public function __construct(
-        protected string $method = 'compose',
+        protected string $method = 'typed',
     ) {
     }
 

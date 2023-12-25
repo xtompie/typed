@@ -9,7 +9,7 @@ use Xtompie\Result\Error;
 use Xtompie\Result\ErrorCollection;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class Only implements PreAssert
+class Only implements Assert
 {
     public function assert(mixed $primitive, string $type): mixed
     {
@@ -20,11 +20,11 @@ class Only implements PreAssert
         }
 
         $target = array_map(
-            fn (ReflectionParameter $i) => $i->name,
+            fn (ReflectionParameter $parameter) => Typed::objectParameterSource($parameter),
             $class->getConstructor()->getParameters()
         );
         $input = array_keys($primitive);
-        $invalid = array_filter($input, fn ($key) => !in_array($key, $target));
+        $invalid = array_values(array_filter($input, fn ($key) => !in_array($key, $target)));
 
         if ($invalid) {
             return ErrorCollection::ofErrors(array_map(

@@ -2,7 +2,7 @@
 
 namespace Xtompie\Typed;
 
-interface PreAssert
+interface Assert
 {
     public function assert(mixed $input, string $type): mixed;
 }

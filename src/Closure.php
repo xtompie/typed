@@ -2,7 +2,7 @@
 
 namespace Xtompie\Typed;
 
-interface PostAssert
+interface Closure
 {
     public function assert(mixed $input): mixed;
 }
