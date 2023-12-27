@@ -8,12 +8,12 @@ use Attribute;
 class Factory
 {
     public function __construct(
-        protected string $class,
+        protected ?string $class = null,
         protected string $method = 'typed',
     ) {
     }
 
-    public function class(): string
+    public function class(): ?string
     {
         return $this->class;
     }

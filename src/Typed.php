@@ -57,7 +57,7 @@ final class Typed
         }
 
         if ($factory) {
-            $object = call_user_func([$factory->class(), $factory->method()], $input);
+            $object = call_user_func([$factory->class() ?: $type, $factory->method()], $input);
         } else {
             $object = static::objectParameters(class: $class, input: (array)$input);
         }
