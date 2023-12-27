@@ -42,9 +42,13 @@ final class Typed
     {
         $class = new ReflectionClass($type);
 
-        $input = static::objectInput($input);
-        if ($input instanceof ErrorCollection) {
-            return $input;
+        $factory = static::objectFactory($class);
+
+        if (!$factory) {
+            $input = static::objectInput($input);
+            if ($input instanceof ErrorCollection) {
+                return $input;
+            }
         }
 
         $input = static::objectAssert($type, $input, $class);
@@ -52,7 +56,12 @@ final class Typed
             return $input;
         }
 
-        $object = static::objectParameters(class: $class, input: $input);
+        if ($factory) {
+            $object = call_user_func([$factory->class(), $factory->method()], $input);
+        } else {
+            $object = static::objectParameters(class: $class, input: (array)$input);
+        }
+
         if ($object instanceof ErrorCollection) {
             return $object;
         }
@@ -65,6 +74,15 @@ final class Typed
         return $object;
     }
 
+    protected static function objectFactory(ReflectionClass $class): ?Factory
+    {
+        foreach ($class->getAttributes(Factory::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+            return $attribute->newInstance();
+        }
+
+        return null;
+    }
+
     protected static function objectInput(mixed $input): array|ErrorCollection
     {
         if (!is_array($input) && !is_object($input)) {
@@ -74,7 +92,7 @@ final class Typed
         return is_object($input) ? (array)$input : $input;
     }
 
-    protected static function objectAssert(string $type, array $input, ReflectionClass $class): array|ErrorCollection
+    protected static function objectAssert(string $type, mixed $input, ReflectionClass $class): mixed
     {
         foreach ($class->getAttributes(Assert::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
             $assert = $attribute->newInstance();
