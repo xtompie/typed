@@ -304,6 +304,93 @@ object(Xtompie\Result\ErrorCollection)#7 (1) {
 */
 ```
 
+### Factory
+
+By default objects are build through `__constructor` and their propertires.
+Alternative object can be build throught static factory method provided by `Factory` class attribute.
+
+```php
+<?php
+
+use Xtompie\Result\ErrorCollection;
+use Xtompie\Typed\Factory;
+use Xtompie\Typed\Typed;
+
+#[Factory(class: Time::class, method: 'typed')]
+class Time
+{
+    public static function typed(mixed $input): static|ErrorCollection
+    {
+        $input = (int)$input;
+        if ($input < 0) {
+            return ErrorCollection::ofErrorMsg('Time must be positive', 'time');
+        }
+        return new Time($input);
+    }
+
+    public  function __construct(
+        protected int $time,
+    ) {
+    }
+}
+
+class Article
+{
+    public function __construct(
+        protected Time $time,
+    ) {
+    }
+}
+
+$article = Typed::typed(Article::class, ['time' => time()]);
+```
+
+In above example the Factory attribute can be even: `#[Factory]`.
+If `class` is null then the context class is used.
+`method` parameter is be default `typed`.
+Method must be static. Must have one argument of type mixed. Must return the object or ErrorCollection.
+
+### Creating assert
+
+```php
+<?php
+
+use Attribute;
+use Xtompie\Result\ErrorCollection;
+use Xtompie\Typed\Assert;
+
+#[Attribute(Attribute::TARGET_PARAMETER)]
+class Positive implements Assert
+{
+    public function assert(mixed $input, string $type): mixed
+    {
+        $input = (int)$input;
+        if ($input < 0) {
+            return ErrorCollection::ofErrorMsg(
+                message: 'Value must be positive',
+                key: 'positive',
+            );
+        }
+
+        return $input;
+    }
+}
+```
+
+Then add created assert attriute into property.
+
+```php
+<?php
+class Pet
+{
+    public function __construct(
+        #[Positive]
+        protected int $age,
+    ) {
+    }
+}
+```
+
 ### Others
 
 [Alnum](https://github.com/xtompie/typed/blob/master/src/Alnum.php),
