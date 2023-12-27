@@ -7,7 +7,7 @@ namespace Xtompie\Typed;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
-class Trim implements Assert
+class TrimLeft implements Assert
 {
     public function __construct(
         protected string $characters = " \n\r\t\v\x00",
