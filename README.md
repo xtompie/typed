@@ -1,4 +1,4 @@
-# Typed - Primitive as Typed Object
+# Typed - Primitives as Typed Objects
 
 Library that maps pritmitve types into typed objects.
 Can be used to maps request/input into objects of defined classes.

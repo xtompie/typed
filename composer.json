@@ -11,6 +11,8 @@
             "email": "tomasz.pielczyk@gmail.com"
         }
     ],
+    "description": "Typed is a library that provides a set of classes that allow you to define types for your variables.",
+    "keywords": ["type", "typed", "types", "typing", "validation", "validation", "validator", "validators", "validate"],
     "license": "MIT",
     "require": {
         "xtompie/result": "^1.5"
