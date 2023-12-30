@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use Xtompie\Result\ErrorCollection;
 use Xtompie\Typed\Replace;
 
 class ReplaceTest extends TestCase
