@@ -43,8 +43,9 @@ final class Typed
         $class = new ReflectionClass($type);
 
         $factory = static::objectFactory($class);
+        $collection = static::objectCollection($class);
 
-        if (!$factory) {
+        if (!$factory && !$collection) {
             $input = static::objectInput($input);
             if ($input instanceof ErrorCollection) {
                 return $input;
@@ -58,6 +59,9 @@ final class Typed
 
         if ($factory) {
             $object = call_user_func([$factory->class() ?: $type, $factory->method()], $input);
+        } elseif ($collection) {
+            $result = (new ArrayOf($collection->of()))->assert($input);
+            $object = $result instanceof ErrorCollection ? $result : $class->newInstance($result);
         } else {
             $object = static::objectParameters(class: $class, input: (array)$input);
         }
@@ -77,6 +81,15 @@ final class Typed
     protected static function objectFactory(ReflectionClass $class): ?Factory
     {
         foreach ($class->getAttributes(Factory::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+            return $attribute->newInstance();
+        }
+
+        return null;
+    }
+
+    protected static function objectCollection(ReflectionClass $class): ?Collection
+    {
+        foreach ($class->getAttributes(Collection::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
             return $attribute->newInstance();
         }
 
