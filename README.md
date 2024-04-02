@@ -1,8 +1,24 @@
-# Typed - Primitives as Typed Objects
+# Typed
 
+Primitives as Typed Objects.
 Library that maps pritmitve types into typed objects.
 Can be used to maps request/input into objects of defined classes.
 Gives [ErrorCollection](https://github.com/xtompie/result/blob/master/src/ErrorCollection.php) on fail.
+
+- [Typed](#typed)
+  - [Requiments](#requiments)
+  - [Installation](#installation)
+  - [Docs](#docs)
+    - [Basic](#basic)
+    - [Class](#class)
+    - [ArrayOf](#arrayof)
+    - [Source](#source)
+    - [Only](#only)
+    - [Callback](#callback)
+    - [Factory](#factory)
+    - [Creating assert](#creating-assert)
+    - [Others](#others)
+    - [Limitations](#limitations)
 
 ## Requiments
 
