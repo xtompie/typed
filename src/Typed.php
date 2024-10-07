@@ -21,6 +21,7 @@ final class Typed
         return match($type) {
             'null' =>  is_null($input) ? $input : ErrorCollection::ofErrorMsg('Value must be of type null', 'null'),
             'boolean' =>  is_bool($input) ? $input : ErrorCollection::ofErrorMsg('Value must be of type boolean', 'boolean'),
+            'bool' =>  is_bool($input) ? $input : ErrorCollection::ofErrorMsg('Value must be of type boolean', 'bool'),
             'int' =>  is_int($input) ? $input : ErrorCollection::ofErrorMsg('Value must be of type int', 'int'),
             'float' =>  is_float($input) ? $input : ErrorCollection::ofErrorMsg('Value must be of type float', 'float'),
             'string' =>  is_string($input) ? $input : ErrorCollection::ofErrorMsg('Value must be of type string', 'string'),
