@@ -7,6 +7,7 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionParameter;
+use ReflectionEnum;
 use Xtompie\Result\ErrorCollection;
 
 final class Typed
@@ -41,6 +42,10 @@ final class Typed
      */
     public static function object(string $type, mixed $input, mixed $context = null): object
     {
+        if (enum_exists($type)) {
+            return static::enum($type, $input);
+        }
+
         $class = new ReflectionClass($type);
 
         $factory = static::objectFactory($class);
@@ -258,4 +263,34 @@ final class Typed
         return $class->newInstanceArgs($args);
     }
 
+    protected static function enum(string $type, mixed $input): mixed
+    {
+        $enum = new ReflectionEnum($type);
+        $backingType = $enum->getBackingType()?->getName();
+        $options = array_map(fn($case) => $case->getBackingValue(), $enum->getCases());
+
+        if ($backingType === 'string') {
+            if (!is_string($input)) {
+                return ErrorCollection::ofErrorMsg("Value must be of type string", 'enum');
+            }
+            $enumValue = $type::tryFrom($input);
+            if ($enumValue === null) {
+                return ErrorCollection::ofErrorMsg("Value must be a one of " . implode(', ', $options), 'enum');
+            }
+            return $enumValue;
+        }
+
+        if ($backingType === 'int') {
+            if (!is_int($input)) {
+                return ErrorCollection::ofErrorMsg("Value must be of type int", 'enum');
+            }
+            $enumValue = $type::tryFrom($input);
+            if ($enumValue === null) {
+                return ErrorCollection::ofErrorMsg("Value must be a one of " . implode(', ', $options), 'enum');
+            }
+            return $enumValue;
+        }
+
+        throw new Exception("Unsupported enum type for {$type}. Only backed enums of type string or int are supported.");
+    }
 }
